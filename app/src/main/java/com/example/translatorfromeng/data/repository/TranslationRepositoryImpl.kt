@@ -14,16 +14,21 @@ class TranslationRepositoryImpl (
     private val dao: TranslationDao
 ) : TranslationRepository {
 
-    override suspend fun getTranslation(word: String): Translation {
+    override suspend fun getTranslation(word: String): Result<Translation> = try {
         val response = api.searchWord(word)
-        if (response.isNotEmpty()) {
-            val meaning = response[0].meanings[0]
-            return Translation(
-                englishWord = word,
-                russianTranslation = meaning.translation.text
+        val text = response.firstOrNull()?.meanings?.firstOrNull()?.translation?.text
+        if (text != null) {
+            Result.success(
+                Translation(
+                    englishWord = word,
+                    russianTranslation = text
+                )
             )
+        } else {
+            Result.failure(Exception("No translation found"))
         }
-        throw Exception("No translation found")
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
     override suspend fun insertTranslation(translation: Translation) {

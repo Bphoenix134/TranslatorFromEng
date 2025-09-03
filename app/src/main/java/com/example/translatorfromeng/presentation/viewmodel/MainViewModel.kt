@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
     private val insertUseCase: InsertTranslationUseCase,
     private val deleteUseCase: DeleteTranslationUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val getHistoryUseCase: GetHistoryUseCase
+    getHistoryUseCase: GetHistoryUseCase
 ) : ViewModel() {
 
     val history: StateFlow<List<Translation>> = getHistoryUseCase().stateIn(viewModelScope, SharingStarted.Lazily, emptyList())

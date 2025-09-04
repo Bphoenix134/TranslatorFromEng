@@ -1,4 +1,4 @@
-package com.example.translatorfromeng.presentation.ui.screen.component
+package com.example.translatorfromeng.presentation.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.translatorfromeng.R
 import com.example.translatorfromeng.domain.model.Translation
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun TranslationItem(
@@ -27,10 +30,10 @@ fun TranslationItem(
     onToggleFavorite: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -41,25 +44,37 @@ fun TranslationItem(
         ) {
             Column {
                 Text(
-                    text = "${translation.englishWord} - ${translation.russianTranslation}",
+                    text = "${translation.englishWord} → ${translation.russianTranslation}",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = stringResource(R.string.add) + " " + java.text.SimpleDateFormat("dd/MM/yyyy").format(java.util.Date(translation.timestamp)),
-                    style = MaterialTheme.typography.bodySmall
+                    text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        .format(Date(translation.timestamp)),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Row {
                 IconButton(onClick = onToggleFavorite) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_favorite),
-                        contentDescription = stringResource(R.string.remove_from_favorites)
+                        painter = if (translation.isFavorite) {
+                            painterResource(R.drawable.ic_favorite)
+                        } else {
+                            painterResource(R.drawable.ic_no_favorite)
+                        },
+                        contentDescription = if (translation.isFavorite) {
+                            stringResource(R.string.remove_from_favorites)
+                        } else {
+                            stringResource(R.string.add_to_favorites)
+                        },
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
                         painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = stringResource(R.string.delete_translation)
+                        contentDescription = stringResource(R.string.delete_translation),
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }

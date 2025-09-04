@@ -1,16 +1,19 @@
 <resources>
     <string name="app_name">TranslatorFromEng</string>
-    <string name="enter_word">Enter English word</string>
+    <string name="enter_word">Enter word</string>
+    <string name="translator">Translator</string>
     <string name="translate">Translate</string>
-    <string name="translation">Translation:</string>
+    <string name="translation">Translation</string>
     <string name="error">Error:</string>
     <string name="delete">Delete</string>
     <string name="go_to_favorites">Go to Favorites</string>
     <string name="back">Back</string>
     <string name="favorites">Favorites</string>
     <string name="no_favorites">"No favorite translations yet</string>
+    <string name="no_history">"No history translations yet</string>
     <string name="add">Added:</string>
-    <string name="history">History:</string>
+    <string name="history">History</string>
     <string name="remove_from_favorites">Remove from Favorites</string>
     <string name="delete_translation">Delete Translation</string>
+    <string name="add_to_favorites">Add to Favorites</string>
 </resources>

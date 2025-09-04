@@ -24,4 +24,7 @@ interface TranslationDao {
 
     @Query("SELECT * FROM translation WHERE isFavorite = 1 ORDER BY timestamp DESC")
     fun getFavorites(): Flow<List<TranslationEntity>>
+
+    @Query("SELECT * FROM translation WHERE englishWord = :word LIMIT 1")
+    suspend fun getByWord(word: String): TranslationEntity?
 }

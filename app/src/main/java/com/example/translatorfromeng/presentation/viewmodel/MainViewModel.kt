@@ -1,5 +1,6 @@
 package com.example.translatorfromeng.presentation.viewmodel
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.translatorfromeng.domain.model.Translation
@@ -10,6 +11,7 @@ import com.example.translatorfromeng.domain.usecase.InsertTranslationUseCase
 import com.example.translatorfromeng.domain.usecase.ToggleFavoriteUseCase
 import com.example.translatorfromeng.presentation.viewmodel.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,13 +36,22 @@ class MainViewModel @Inject constructor(
     fun translate(word: String) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            try {
-                val translation = getTranslationUseCase(word)
-                insertUseCase(translation)
-                _uiState.value = UiState.Success(translation)
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Error")
-            }
+            getTranslationUseCase(word)
+                .onSuccess {
+                    try {
+                        insertUseCase(it)
+                        _uiState.value = UiState.Success(it)
+                        delay(5000)
+                        _uiState.value = UiState.Idle
+                    } catch (e: SQLiteConstraintException) {
+                        _uiState.value = UiState.Success(it)
+                    }
+                }
+                .onFailure {
+                    _uiState.value = UiState.Error(it.message ?: "Unknown error")
+                    delay(5000)
+                    _uiState.value = UiState.Idle
+                }
         }
     }
 
